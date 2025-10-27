@@ -21,12 +21,9 @@ The primary goal is to design an induction heater capable of heating 1 kg of ste
 * **Desired Resonant Frequency (f):** 50 kHz
 
 ### Coil Parameters
-* **Coil Diameter:** 40 mm (0.04 m)
+* **Coil Diameter ($l_{coil}$):** 40 mm (0.04 m)
+* **Coil Radius (r):** 20 mm (0.02 m)
 * **Number of Turns (N):** 10
-* **Wire Type:** Copper coil pipe
-* **Wire Outer Diameter:** 1/4 inch (6.35 mm)
-* **Wire Wall Thickness:** 1 mm
-* **Gap Between Turns:** 3 mm
 
 ***
 
@@ -52,28 +49,27 @@ The primary goal is to design an induction heater capable of heating 1 kg of ste
 
 5.  **Supply Selection:**
     To achieve $\sim 1000W$, a suitable power supply is required.
-    * For 12V: $I = 989.59W / 12V = 82.47~A$
-    * For 24V: $I = 989.59W / 24V = 41.23~A$
-    * For 48V: $I = 989.59W / 48V = 20.62~A$
-
-    **Conclusion:** A **48V, 25A power supply** is the best choice.
+    * Calculated Current: $I = 989.59W / 48V = 20.62~A$
+    * **Conclusion:** A **48V, 25A power supply** is a safe and appropriate choice.
 
 ### Coil & Resonant Tank
 
 1.  **Coil Inductance (L):**
-    Based on the coil parameters and the formula $L = (\mu_0 	imes N^2 	imes A_{coil}) / l_{coil}$, the calculated inductance is:
-    $L = 3.95 	imes 10^{-6} H$ or **$3.95~\mu H$**
+    Using the standard formula for a short solenoid, $L = rac{\mu_0 N^2 A}{l_{coil}}$, where $A = \pi r^2$.
+    * $A = \pi 	imes (0.02~m)^2 = 0.001257~m^2$
+    * $L = rac{(4\pi 	imes 10^{-7} 	imes 10^2 	imes 0.001257)}{0.04~m}$
+    * $L = 3.947 	imes 10^{-6} H pprox$ **$3.95~\mu H$**
 
 2.  **Required Capacitance (C):**
     To achieve the resonant frequency (f) of 50 kHz with the $3.95~\mu H$ coil:
     $C = 1 / ((2 \pi f)^2 	imes L)$
     $C = 1 / ((2 \pi 	imes 50 	imes 10^3)^2 	imes 3.95 	imes 10^{-6})$
-    $C = 2.57 	imes 10^{-6} F$ or **$2.57~\mu F$**
+    $C = 2.56 	imes 10^{-6} F pprox$ **$2.57~\mu F$**
 
 ### Heat Sink Design
 
 1.  **MOSFET Power Dissipation ($P_D$):**
-    Using the SNW60N15 MOSFET ($R_{DS(on)} = 33~m\Omega$) and the calculated current ($I_D pprox 25~A$):
+    Using a worst-case current $I_D$ of **25 A** (the max rating of the chosen power supply) and the SNW60N15 MOSFET ($R_{DS(on)} = 33~m\Omega$):
     $P_D = I_D^2 	imes R_{DS(on)}$
     $P_D = (25)^2 	imes 0.033 = 20.625~W$
 
@@ -149,12 +145,14 @@ This design uses a MOSFET-based astable multivibrator to create a self-oscillati
 ### Design Note & Calculation
 The project specification calls for a 50 **kHz** resonant frequency, but the astable multivibrator calculation was performed for 50-200 **Hz**.
 
-The calculation shown is for **50 Hz** using 10k resistors (though the circuit diagram uses 20k resistors).
+The calculation shown is for **50 Hz**. Using the **20k $\Omega$** resistors (as shown in the diagram and component list):
 * **Formula:** $f = 1 / (\ln(2) 	imes (R_1C_1 + R_2C_2))$
-* **Calculation for 50 Hz (using 10k resistors):**
-    $50 = 1 / (\ln(2) 	imes (10 	imes 10^3 	imes C + 10 	imes 10^3 	imes C))$
-    $C = 0.721 \mu F$
-* **Selected Component:** A **$0.75 \mu F$** capacitor was selected for the astable timing.
+* **Calculation:**
+    $50 = 1 / (0.693 	imes (20 	imes 10^3 	imes C + 20 	imes 10^3 	imes C))$
+    $50 = 1 / (0.693 	imes 40 	imes 10^3 	imes C)$
+    $C = 1 / (50 	imes 0.693 	imes 40 	imes 10^3)$
+    $C = 0.721 	imes 10^{-6} F$
+* **Selected Component:** A **$0.75~\mu F$** capacitor was selected for the astable timing.
 
 ### Components
 * Astable Capacitors (0.75uF) $	imes$ 2
@@ -171,12 +169,12 @@ The calculation shown is for **50 Hz** using 10k resistors (though the circuit d
 
 Similar to the Arduino design, the simulation file was modified to test the core oscillator logic. The heater coil, tank capacitor, and choke inductors were removed, as they prevented the simulation from running correctly.
 
-![Astable Multivibrator Simulation Circuit](images/astable_simulation_circuit.png)
+![Astable Multivivbrator Simulation Circuit](images/astable_simulation_circuit.png)
 
 
 The oscilloscope results show the characteristic charging/discharging "sawtooth" wave of the astable multivibrator at the MOSFET gates, confirming the circuit is oscillating.
 
-![Astable Multivibrator Simulation Results](images/astable_simulation_results.png)
+![Astable Multivivbrator Simulation Results](images/astable_simulation_results.png)
 
 
 ***
