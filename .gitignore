@@ -1,0 +1,11 @@
+# Proteus log/backup files
+*.bak
+*.log
+*.logsh.workspace
+
+# VSCode
+.vscode/
+
+# Operating System files
+.DS_Store
+Thumbs.db
